@@ -31,16 +31,6 @@ public class Nondeterministic_Automata {
 	public void seqRun(String seq) {
 		ArrayList<Integer> qState = new ArrayList<>();
 
-		// for(char i: seq.toCharArray()) {
-		// while(currentState.size()>0) {
-		// State sample = transitionStates.get(currentState.remove(0));
-		// qState.addAll(sample.getTransitions(i));
-		//
-		// }
-		// currentState.addAll(qState);
-		// qState.clear();
-		// }
-
 		for (char i : seq.toCharArray()) {
 			// keeps on adding the transition states to qState for each iteration. then
 			// clears before next
@@ -48,6 +38,10 @@ public class Nondeterministic_Automata {
 			while (currentState.size() != 0) {
 
 				State sample = transitionStates.get(currentState.get(0));
+				if(sample.getTransitions(i) == null) {
+					currentState.clear();
+					continue;
+				}
 				qState.addAll(sample.getTransitions(i));
 				currentState.remove(0);
 			}
@@ -56,7 +50,7 @@ public class Nondeterministic_Automata {
 		}
 
 		//
-		// System.out.println(currentState);
+		//System.out.println(currentState);
 
 	}
 
@@ -86,11 +80,16 @@ public class Nondeterministic_Automata {
 					rejectList.add(i);
 			}
 		}
-		// System.out.println(rejectList);
+		//System.out.println(rejectList);
 
 		int holder = currentState.size() - 1;
 
-		if (checkState(states.get(currentState.get(holder)), currentState.get(holder)) == true) {
+
+		if(currentState.isEmpty()) {
+			System.out.println("Reject");
+			System.out.println();
+		}
+		else if (checkState(states.get(currentState.get(holder)), currentState.get(holder)) == true) {
 
 			if (!acceptList.isEmpty()) {
 				System.out.print("Accept ");
@@ -99,7 +98,7 @@ public class Nondeterministic_Automata {
 				}
 				System.out.println();
 			}
-		} else if ((checkState(states.get(currentState.get(holder)), currentState.get(holder)) == false)) {
+		} else if((checkState(states.get(currentState.get(holder)), currentState.get(holder)) == false) ){
 			if (!rejectList.isEmpty()) {
 				System.out.print("Reject ");
 				for (int i : rejectList) {
@@ -113,8 +112,7 @@ public class Nondeterministic_Automata {
 	}
 
 	public boolean checkState(State aState, int numState) {
-		if (aState == null)
-			return false;
+		if(aState == null) return false;
 		if (aState.getState().equals("start")) {
 			return false;
 		} else if (aState.getState().equals("transition, Dont Count")) {
@@ -131,7 +129,7 @@ public class Nondeterministic_Automata {
 	/*
 	 * this method reads the file, breaks it up into an array line by line then
 	 * analyzes each line based on if its a "state" or "transition and processes it
-	 * 
+	 *
 	 */
 	public void readFile(File aFileName) throws FileNotFoundException {
 		Scanner file = new Scanner(aFileName);
@@ -192,31 +190,12 @@ public class Nondeterministic_Automata {
 
 		}
 
-		// System.out.println(transitionStates.get(3).getTransitions('0'));
-		// System.out.println(transitionStates);
-
-		// for(State x: states) {
-		// if(x!=null)
-		// System.out.println(x.getState() + " " + x.getStateNum());
-		// }
-		// for(State y: transitionStates) {
-		// System.out.println(y.getState() + " " + y.getStateNum() + " " +
-		// y.getTransitions('0'));
-		// }
-
-		// System.out.println(currentState);
-		// System.out.println(checkState(states.get(1), transitionStates.get(1)));
-
 		file.close();
 
 	}
 
 	public static void main(String[] args) {
-		// if(args.length <2 ) {
-		// System.out.println("Error: Write a filename and input");
-		// System.exit(-1);
-		// }
-		boolean exitVal = false;
+			boolean exitVal = false;
 			
 		
 			Scanner userInput = new Scanner(System.in);
@@ -256,4 +235,5 @@ public class Nondeterministic_Automata {
 			userInput.close();
 	
 	}
+
 }
